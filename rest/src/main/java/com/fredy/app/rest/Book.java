@@ -15,8 +15,8 @@ public class Book
     @Column
     private String author;
 
-    @Column
-    private int release_year;
+    @Column(name = "releaseyear", nullable = false)
+    private int releaseyear;
 
     @Column
     private boolean availability = true;
@@ -79,12 +79,12 @@ public class Book
 
     public int getRelease_year()
     {
-        return release_year;
+        return releaseyear;
     }
 
     public void setRelease_year(int release_year)
     {
-        this.release_year = release_year;
+        this.releaseyear = release_year;
     }
 
     public boolean isAvailability()
