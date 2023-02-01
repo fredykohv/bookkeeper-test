@@ -13,6 +13,9 @@ public class BookController
     @Autowired
     private BookRepository bookRepository;
 
+    @Autowired
+    private BookManager bookManager;
+
 
     @GetMapping("/")
     public String home_page()
@@ -55,129 +58,37 @@ public class BookController
     @GetMapping("/books/title/{title}")
     public List<Book> get_books_by_title(@PathVariable String title)
     {
-        List<Book> books = bookRepository.findAll();
-        List<Book> books_with_desired_title = new ArrayList<>();
-
-        for (Book b : books)
-        {
-            if (b.getTitle().equals(title))
-            {
-                books_with_desired_title.add(b);
-            }
-        }
-
-        return books_with_desired_title;
+        return bookManager.get_books_by_title(title, bookRepository);
     }
 
     @GetMapping("/books/author/{author}")
     public List<Book> get_books_by_author(@PathVariable String author)
     {
-        List<Book> books = bookRepository.findAll();
-        List<Book> books_with_desired_author = new ArrayList<>();
-
-        for (Book b : books)
-        {
-            if (b.getAuthor().equals(author))
-            {
-                books_with_desired_author.add(b);
-            }
-        }
-
-        return books_with_desired_author;
+        return bookManager.get_books_by_author(author, bookRepository);
     }
 
     @GetMapping("/books/year/{year}")
     public List<Book> get_books_by_year(@PathVariable int year)
     {
-        List<Book> books = bookRepository.findAll();
-        List<Book> books_with_desired_year = new ArrayList<>();
-
-        for (Book b : books)
-        {
-            if (b.getRelease_year() == year)
-            {
-                books_with_desired_year.add(b);
-            }
-        }
-
-        return books_with_desired_year;
+        return bookManager.get_books_by_release(year, bookRepository);
     }
 
     @PutMapping("/books/update/{id}")
     public String update_book(@PathVariable Long id, @RequestBody Book book)
     {
-        Book updated_book = bookRepository.findById(id).get();
-        updated_book.setTitle(book.getTitle());
-        updated_book.setAuthor(book.getAuthor());
-        updated_book.setRelease_year(book.getRelease_year());
-        updated_book.setAvailability(book.isAvailability());
-        updated_book.setAmount(book.getAmount());
-        updated_book.setOn_loan_days(book.getOn_loan_days());
-        bookRepository.save(updated_book);
-
-        return "Book updated!";
+        return bookManager.update_book(id, book, bookRepository);
     }
 
     @PutMapping("/books/loan/{title}")
     public String loan_book(@PathVariable String title)
     {
-        List<Book> books = bookRepository.findAll();
-        List<Book> desired_books_by_title = new ArrayList<>();
-
-        for (Book b : books)
-        {
-            if (b.getTitle().equals(title) && b.isAvailability())
-            {
-                desired_books_by_title.add(b);
-            }
-        }
-
-        if (desired_books_by_title.isEmpty())
-        {
-            return "No available books with the title of: " + title;
-        }
-
-        if (desired_books_by_title.size() >= 5)
-        {
-            desired_books_by_title.get(0).setAvailability(false);
-            desired_books_by_title.get(0).setOn_loan_days(28);
-        }
-        else
-        {
-            desired_books_by_title.get(0).setAvailability(false);
-            desired_books_by_title.get(0).setOn_loan_days(7);
-        }
-
-        update_book(desired_books_by_title.get(0).getId(), desired_books_by_title.get(0));
-
-        return "Book with the title of: " + title + " loaned for " + desired_books_by_title.get(0).getOn_loan_days() + " days!";
+        return bookManager.loan_book(title, bookRepository);
     }
 
     @PutMapping("/books/return/{title}")
     public String return_book(@PathVariable String title)
     {
-        List<Book> books = bookRepository.findAll();
-        List<Book> returnable_books_by_title = new ArrayList<>();
-
-        for (Book b : books)
-        {
-            if (b.getTitle().equals(title) && !b.isAvailability())
-            {
-                returnable_books_by_title.add(b);
-            }
-        }
-
-        if (returnable_books_by_title.isEmpty())
-        {
-            return "Not able to return this book ('" + title + "') because we either don't have it or haven't loaned it out!";
-        }
-
-        returnable_books_by_title.get(0).setAvailability(true);
-        returnable_books_by_title.get(0).setOn_loan_days(0);
-
-        update_book(returnable_books_by_title.get(0).getId(), returnable_books_by_title.get(0));
-
-        return "Thank you for return the book: " + title;
+        return bookManager.return_book(title, bookRepository);
     }
 
     @DeleteMapping("/delete/{id}")
