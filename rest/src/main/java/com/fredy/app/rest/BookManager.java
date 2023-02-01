@@ -129,6 +129,6 @@ public class BookManager
 
         update_book(returnable_books_by_title.get(0).getId(), returnable_books_by_title.get(0), bookRepository);
 
-        return "Thank you for return the book: " + title;
+        return "Thank you for returning the book: " + title;
     }
 }
