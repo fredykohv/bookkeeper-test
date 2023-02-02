@@ -10,7 +10,7 @@ This REST API application helps managing books and storing them in a mysql datab
 * * Set the username to your MySQL username (By default it is ```root```) ```spring.datasource.username=root```
 * * Set the password to your MySQL password ```spring.datasource.password=PASSWORD```
 
-* Now it should be compiled and see a new table called "book" in your MySQL database after refresh!  
+* Now it should be compiled and see a new table called "book" in your MySQL database after executing the code and refresh!  
  ![Result](https://user-images.githubusercontent.com/56818310/216029748-b5ea780e-6fd1-4640-bd53-9b7fef7572bd.png)
 * Using Postman you have to create a GET request to localhost:8080 (default) using this request URL ```localhost:8080/books``` to return all of the books and it should return this ![image](https://user-images.githubusercontent.com/56818310/216030463-cab3b7c5-c200-4861-b6ee-9abd1167e825.png)
  
